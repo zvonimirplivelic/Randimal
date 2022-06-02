@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso
 import com.zvonimirplivelic.randimal.R
 import com.zvonimirplivelic.randimal.RandimalViewModel
 import com.zvonimirplivelic.randimal.util.Resource
+import de.hdodenhof.circleimageview.CircleImageView
 import timber.log.Timber
 
 class AnimalInfoFragment : Fragment() {
@@ -31,7 +32,7 @@ class AnimalInfoFragment : Fragment() {
         val progressBar: ProgressBar = view.findViewById(R.id.progress_bar)
         val fabRefresh: FloatingActionButton = view.findViewById(R.id.fab_get_animal_info)
 
-        val ivImage: ImageView = view.findViewById(R.id.iv_image)
+        val ivImage: CircleImageView = view.findViewById(R.id.iv_image)
         val tvName: TextView = view.findViewById(R.id.tv_name)
         val tvLatinName: TextView = view.findViewById(R.id.tv_latin_name)
         val tvType: TextView = view.findViewById(R.id.tv_type)
@@ -57,7 +58,12 @@ class AnimalInfoFragment : Fragment() {
                     progressBar.isVisible = false
                     response.data?.let { animalInfoResponse ->
 
-                        Picasso.get().load(animalInfoResponse.imageLink).into(ivImage)
+                        Picasso.get()
+                            .load(animalInfoResponse.imageLink)
+                            .noFade()
+                            .resize(640, 640)
+                            .into(ivImage)
+
                         tvName.text = animalInfoResponse.name
                         tvLatinName.text = animalInfoResponse.latinName
                         tvType.text = animalInfoResponse.animalType
