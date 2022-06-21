@@ -5,19 +5,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
 import com.zvonimirplivelic.randimal.R
 import com.zvonimirplivelic.randimal.RandimalViewModel
+import com.zvonimirplivelic.randimal.util.Constants.FEET_TO_METERS
+import com.zvonimirplivelic.randimal.util.Constants.POUNDS_TO_KILOS
 import com.zvonimirplivelic.randimal.util.Resource
 import de.hdodenhof.circleimageview.CircleImageView
-import timber.log.Timber
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 class AnimalInfoFragment : Fragment() {
 
@@ -29,6 +32,7 @@ class AnimalInfoFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_animal_info, container, false)
 
+        val clDataLayout: ConstraintLayout = view.findViewById(R.id.cl_data_layout)
         val progressBar: ProgressBar = view.findViewById(R.id.progress_bar)
         val fabRefresh: FloatingActionButton = view.findViewById(R.id.fab_get_animal_info)
 
@@ -56,29 +60,66 @@ class AnimalInfoFragment : Fragment() {
             when (response) {
                 is Resource.Success -> {
                     progressBar.isVisible = false
+                    clDataLayout.isVisible = true
+
                     response.data?.let { animalInfoResponse ->
 
                         Picasso.get()
                             .load(animalInfoResponse.imageLink)
-                            .noFade()
-                            .resize(640, 640)
+                            .centerCrop()
+                            .fit()
+                            .placeholder(R.drawable.ic_paw)
                             .into(ivImage)
 
                         tvName.text = animalInfoResponse.name
                         tvLatinName.text = animalInfoResponse.latinName
-                        tvType.text = animalInfoResponse.animalType
-                        tvActiveTime.text = animalInfoResponse.activeTime
-                        tvLength.text = animalInfoResponse.lengthMax
-                        tvWeight.text = animalInfoResponse.weightMax
-                        tvLifespan.text = animalInfoResponse.lifespan
-                        tvHabitat.text = animalInfoResponse.habitat
-                        tvGeoRange.text = animalInfoResponse.geoRange
-                        tvDiet.text = animalInfoResponse.diet
+
+                        tvType.text = resources.getString(
+                            R.string.animal_type_string,
+                            animalInfoResponse.animalType
+                        )
+
+                        tvActiveTime.text = resources.getString(
+                            R.string.active_time_string,
+                            animalInfoResponse.activeTime
+                        )
+
+                        tvLength.text = resources.getString(
+                            R.string.length_string,
+                            convertHeight(animalInfoResponse.lengthMin),
+                            convertHeight(animalInfoResponse.lengthMax)
+                        )
+                        tvWeight.text = resources.getString(
+                            R.string.weight_string,
+                            convertWeight(animalInfoResponse.lengthMin),
+                            convertWeight(animalInfoResponse.lengthMax)
+                        )
+
+                        tvLifespan.text = resources.getString(
+                            R.string.lifespan_string,
+                            animalInfoResponse.lifespan
+                        )
+
+                        tvHabitat.text = resources.getString(
+                            R.string.habitat_string,
+                            animalInfoResponse.habitat
+                        )
+
+                        tvGeoRange.text = resources.getString(
+                            R.string.geo_range_string,
+                            animalInfoResponse.geoRange
+                        )
+
+                        tvDiet.text = resources.getString(
+                            R.string.diet_string,
+                            animalInfoResponse.diet
+                        )
                     }
                 }
 
                 is Resource.Error -> {
                     progressBar.isVisible = false
+                    clDataLayout.isVisible = false
                     response.message?.let { message ->
                         Toast.makeText(activity, "An error occured: $message", Toast.LENGTH_LONG)
                             .show()
@@ -87,10 +128,33 @@ class AnimalInfoFragment : Fragment() {
 
                 is Resource.Loading -> {
                     progressBar.isVisible = true
+                    clDataLayout.isVisible = false
                 }
             }
         }
 
         return view
+    }
+
+    private fun convertHeight(value: String): String {
+
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.DOWN
+
+        val convertedHeight = (value.toDouble() / FEET_TO_METERS)
+        val roundedValue = df.format(convertedHeight)
+
+        return roundedValue.toString()
+    }
+
+    private fun convertWeight(value: String): String {
+
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.DOWN
+
+        val convertedWeight = (value.toDouble() / POUNDS_TO_KILOS)
+        val roundedValue = df.format(convertedWeight)
+
+        return roundedValue.toString()
     }
 }

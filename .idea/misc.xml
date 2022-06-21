@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_paw.xml" value="0.184" />
+        <entry key="app/src/main/res/drawable/image_load_placeholder.xml" value="0.184" />
+        <entry key="app/src/main/res/drawable/progress_bg.xml" value="0.184" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19375" />
         <entry key="app/src/main/res/layout/fragment_animal_info.xml" value="0.1" />
       </map>

@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">Randimal</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="animal_image_description">Animal image</string>
+    <string name="fab_description">Get random animal info</string>
+
+    <string name="animal_type_string">Animal type: %s</string>
+    <string name="active_time_string">Active time: %s</string>
+    <string name="length_string">Length: %1sm - %2sm</string>
+    <string name="weight_string">Weight: %1skg - %2skg</string>
+    <string name="lifespan_string">Lifespan: %s years</string>
+    <string name="habitat_string">Habitat: %s</string>
+    <string name="geo_range_string">Geo Range: %s</string>
+    <string name="diet_string">Diet: %s</string>
 </resources>
